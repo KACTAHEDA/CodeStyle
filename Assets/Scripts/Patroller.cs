@@ -1,7 +1,7 @@
 
 using UnityEngine;
 
-public class Patrol : MonoBehaviour
+public class Patroller : MonoBehaviour
 {
     [SerializeField]private float _speed;
     [SerializeField] private Transform _movePointsContainer;
@@ -29,27 +29,26 @@ public class Patrol : MonoBehaviour
         _movePoints = new Transform[_movePointsContainer.childCount];
 
         for (int i = 0; i < _movePointsContainer.childCount; i++)
-            _movePoints[i] = _movePointsContainer.GetChild(i).GetComponent<Transform>();
+            _movePoints[i] = _movePointsContainer.GetChild(i);
+    } 
+
+    private void Move()
+    {
+        Transform _targetPoint = _movePoints[_curentMovePointIndex];
+        transform.position = Vector3.MoveTowards(transform.position, _targetPoint.position, _speed * Time.deltaTime);
+
+        if (transform.position == _targetPoint.position) 
+            SelectNextTarget();
     }
 
-    private Vector3 SelectNextTarget()
+    private void SelectNextTarget()
     {
         _curentMovePointIndex++;
 
         if (_curentMovePointIndex == _movePoints.Length)
             _curentMovePointIndex = 0;
 
-        var thisPointVector = _movePoints[_curentMovePointIndex].transform.position;
-        transform.forward = thisPointVector - transform.position;
-        return thisPointVector;
-    }
-
-    private void Move()
-    {
-        var _targetPoint = _movePoints[_curentMovePointIndex];
-        transform.position = Vector3.MoveTowards(transform.position, _targetPoint.position, _speed * Time.deltaTime);
-
-        if (transform.position == _targetPoint.position) 
-            SelectNextTarget();
+        Vector3 nextPointPosition = _movePoints[_curentMovePointIndex].position;
+        transform.forward = nextPointPosition - transform.position;
     }
 }
