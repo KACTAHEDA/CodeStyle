@@ -28,7 +28,7 @@ public class Patroller : MonoBehaviour
     {
         _movePoints = new Transform[_movePointsContainer.childCount];
 
-        for (int i = 0; i < _movePointsContainer.childCount; i++)
+        for (int i = 0; i < _movePoints.Length; i++)
             _movePoints[i] = _movePointsContainer.GetChild(i);
     } 
 
@@ -43,10 +43,7 @@ public class Patroller : MonoBehaviour
 
     private void SelectNextTarget()
     {
-        _curentMovePointIndex++;
-
-        if (_curentMovePointIndex == _movePoints.Length)
-            _curentMovePointIndex = 0;
+        _curentMovePointIndex = ++_curentMovePointIndex % _movePoints.Length;
 
         Vector3 nextPointPosition = _movePoints[_curentMovePointIndex].position;
         transform.forward = nextPointPosition - transform.position;

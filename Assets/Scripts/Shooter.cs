@@ -9,19 +9,22 @@ public class Shooter : MonoBehaviour
     [SerializeField] private float _shootingDelay;
     [SerializeField] private Transform _target;
 
+    private Coroutine _shootCoroutine;
+
     private void OnEnable()
     {
-        StartCoroutine(ShootCoroutine());
+        _shootCoroutine = StartCoroutine(ShootCoroutine());
     }
 
     private void OnDisable()
     {
-        StopAllCoroutines();
+        StopCoroutine(_shootCoroutine);
     }
 
     private IEnumerator ShootCoroutine()
     {
         bool isShooting = true;
+        var delay = new WaitForSeconds(_shootingDelay);
 
         while (isShooting)
         {
@@ -29,7 +32,7 @@ public class Shooter : MonoBehaviour
             Bullet bullet = Instantiate(_bulletPrefab, transform.position + shootingDirection, Quaternion.identity);
             bullet.Init(shootingDirection, _bulletSpeed);          
 
-            yield return new WaitForSeconds(_shootingDelay);
+            yield return delay;
         }
     }
 }
